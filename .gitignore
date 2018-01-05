@@ -155,5 +155,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-/.idea/*
 db.sqlite3
+.idea/
+
