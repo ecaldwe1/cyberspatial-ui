@@ -1,8 +1,6 @@
-<html>
-<head>
-  <meta charset=utf-8 />
-  <title>Showing an ArcGIS basemap</title>
-  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+ {% extends 'base.html' %}
+
+    {% block extra-headers %}
 
     <!-- Load Leaflet from CDN -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
@@ -17,16 +15,15 @@
     <script src="https://unpkg.com/esri-leaflet@2.1.1/dist/esri-leaflet.js"
     integrity="sha512-ECQqaYZke9cSdqlFG08zSkudgrdF6I1d8ViSa7I3VIszJyVqw4ng1G8sehEXlumdMnFYfzY0tMgdQa4WCs9IUw=="
     crossorigin=""></script>
-
-
-  <style>
-    body { margin:0; padding:0; }
-    #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+        <style>
+    {##map { position: absolute; top:0; bottom:0; right:0; left:0; }#}
   </style>
-</head>
-<body>
+{% endblock extra-headers %}
 
-<div id="mapid" style="width: 600px; height: 400px;"></div>
+
+{% block map %}<div id="mapid" class="col-sm-8 col-lg-9 col-xl-10 fake-map" style="width: 100%; height: 100%px;"></div> {% endblock map %}
+
+{% block extra_js_bottom %}
 <script>
 
 	var mymap = L.map('mapid').setView([40.4417743, -74.1298643], 13);
@@ -41,5 +38,4 @@
 
 
 </script>
-</body>
-</html>
+{% endblock extra_js_bottom %}
