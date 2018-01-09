@@ -117,7 +117,7 @@
     <div class="container-fluid">
         <div class="page-header map-header">
             <p>keansburg <span>|</span> planning</p>
-            <div id="fake-map-menu">
+            <div id="leaflet-map-menu">
                 <div class="dropdown show title-drop pull-right">
                     <a class="btn btn-title dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
@@ -137,32 +137,9 @@
         </div>
         <div class="row">
 
-            <div class="col-sm-8 col-lg-9 col-xl-10 fake-map" style="height: 100%;">
+            <div class="col-sm-8 col-lg-9 col-xl-10 leaflet-map">
                 {% block map %} {%  endblock map %}
-{#                <div id="fake-map-cntrls">#}
-{#                    <img class="img-responsive" src="{% static 'images/map-icons.png' %}"/>#}
-{#                </div>#}
-{#                <img id="map-nav" src="{% static 'images/map-nav.png' %}"/>#}
-{#                <img id="map-scale" src="{% static 'images/map-scale.png' %}"/>#}
-{#                <div id="fake-map-tabs">#}
-{#                    <ul class="nav nav-tabs">#}
-{#                        <li>#}
-{#                            <a href="#attributes" data-toggle="tab">#}
-{#                                <i class="fa fa-info-circle"></i> Map Info#}
-{#                            </a>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                            <a href="#info" data-toggle="tab">#}
-{#                                <i class="fa fa-share"></i> Share#}
-{#                            </a>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                            <a href="#info" data-toggle="tab">#}
-{#                                <i class="fa fa-comment"></i> Comments#}
-{#                            </a>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </div>#}
+
             </div>
             <div class="col-sm-4 col-lg-3 col-xl-2" id="map-control-panel">
                 <div class="map-control-item">
