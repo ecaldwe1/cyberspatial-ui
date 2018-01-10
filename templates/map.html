@@ -24,10 +24,16 @@
 
 {% endblock map %}
 
+{#{% block map-controls %}#}
+{##}
+{#{% endblock %}#}
+
 {% block extra_js_bottom %}
     <script>
 
-        var mymap = L.map('mapid').setView([40.4417743, -74.1298643], 13);
+        // Base Map -- Centered on Keansburg, NJ
+
+        var mymap = L.map('mapid').setView([40.4417743, -74.1298643], 12);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
@@ -37,5 +43,61 @@
             id: 'mapbox.streets'
         }).addTo(mymap);
 
+        // WMS Tile Layers
+        /*
+        Data: Watershed Boundary Dataset - National Hydrography Overlay Map Service
+              https://catalog.data.gov/dataset/usgs-national-watershed-boundary-dataset-wbd-
+              downloadable-data-collection-national-geospatial-/resource/f55f881d-9de8-471f-9b6b-22cd7a98025d
+        XML: https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?request=GetCapabilities&service=WMS
+         */
+
+        var flowline_ls_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?', {
+            layers: '3'
+         }).setOpacity(0.5);
+
+        var flowdirection_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?',{
+            layers: '9'
+         }).setOpacity(0.5);
+
+        var waterbody_ss_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?',{
+            layers: '8'
+         }).setOpacity(0.5);
+
+        var line_ss_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?',{
+            layers: '2'
+         }).setOpacity(0.5);
+
+
+        $('#flowline').click(function () {
+            if ($(this).is(':checked')) {
+            flowline_ls_layer.addTo(mymap);
+            } else {
+                mymap.removeLayer(flowline_ls_layer)
+            }
+         });
+
+        $('#flowdirection').click(function () {
+            if ($(this).is(':checked')) {
+            flowdirection_layer.addTo(mymap);
+            } else {
+                mymap.removeLayer(flowdirection_layer)
+            }
+         });
+
+        $('#waterbody').click(function () {
+            if ($(this).is(':checked')) {
+            waterbody_ss_layer.addTo(mymap);
+            } else {
+                mymap.removeLayer(waterbody_ss_layer)
+            }
+         });
+
+        $('#line').click(function () {
+            if ($(this).is(':checked')) {
+            line_ss_layer.addTo(mymap);
+            } else {
+                mymap.removeLayer(line_ss_layer)
+            }
+         });
     </script>
 {% endblock extra_js_bottom %}
