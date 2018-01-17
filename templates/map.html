@@ -46,8 +46,16 @@
 
 {% block extra_js_bottom %}
     <script>
-        // Base Map -- Centered on Keansburg, NJ
+        /*
+        Base Map -- Centered on Keansburg, NJ
+        WMS Tile Layers
+        Data: Watershed Boundary Dataset - National Hydrography Overlay Map Service
+              https://catalog.data.gov/dataset/usgs-national-watershed-boundary-dataset-wbd-
+              downloadable-data-collection-national-geospatial-/resource/f55f881d-9de8-471f-9b6b-22cd7a98025d
+        XML: https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?request=GetCapabilities&service=WMS
+         */
         var mymap = L.map('mapid').setView([40.4417743, -74.1298643], 12);
+        var layer_list = [];
 
         $(document).ready(function () {
 
@@ -71,7 +79,7 @@
                 dataType: "json",
                 success: function (result) {
                     console.log("SUCCESS!");
-                    console.log(result.layers);
+                    {#console.log(result.layers);#}
                     process_layers(result.layers);
                 },
                 error: function (result) {
@@ -82,7 +90,7 @@
 
         function process_layers(layers) {
             layers.forEach(function (item) {
-                console.log(item);
+                {#console.log(item);#}
                 add_layer_to_menu(item);
             });
         }
@@ -91,44 +99,28 @@
             // Create the HTML <li> for each layer and append to the <ul>
             var layer_html = '<li><input id="' + $.trim(layer.id) + '" type="checkbox" name="gender" value="male"> ' + $.trim(layer.name) + '</li>';
             $("#baseMapping").append(layer_html);
-
-            {#eval("var " + layer.id + "_layer=L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?', {  layers: '3'}).setOpacity(0.5);");#}
+            layer.maplayer = L.tileLayer.wms(layer.layer_link, {layers: layer.layer, transparent: true, format: 'image/png'});
+            layer_list.push(layer);
 
             $('#' + $.trim(layer.id)).click(function () {
-                console.log("CHECK " + layer.name);
+                {#var link = layer.layer_link;#}
                 if ($(this).is(':checked')) {
-                    var link = layer.layer_link;
-                    L.tileLayer.wms(link, {layers: layer.layer}).setOpacity(0.5).addTo(mymap);
+                    for(var i=0; i<layer_list.length; i++) {
+                        if (layer_list[i].id == this.id){
+                            console.log("found matching layer: " + this.id);
+                            layer_list[i].maplayer.addTo(mymap);
+                        }
+                    }
                 } else {
-                    {#mymap.removeLayer(flowline_ls_layer)#}
+                    /* TODO: Figure out how to get layers off the map */
+                    for(var i=0; i<layer_list.length; i++) {
+                        if (layer_list[i].id == this.id){
+                            console.log("found matching layer: " + this.id);
+                            mymap.removeLayer(layer_list[i].maplayer);
+                        }
+                    }
                 }
             });
-
         }
-
-        // WMS Tile Layers
-        /*
-        Data: Watershed Boundary Dataset - National Hydrography Overlay Map Service
-              https://catalog.data.gov/dataset/usgs-national-watershed-boundary-dataset-wbd-
-              downloadable-data-collection-national-geospatial-/resource/f55f881d-9de8-471f-9b6b-22cd7a98025d
-        XML: https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?request=GetCapabilities&service=WMS
-         */
-
-        {#var flowline_ls_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?', {#}
-        {#    layers: '3'#}
-        {# }).setOpacity(0.5);#}
-        {##}
-        {#var flowdirection_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?',{#}
-        {#    layers: '9'#}
-        {# }).setOpacity(0.5);#}
-        {##}
-        {#var waterbody_ss_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?',{#}
-        {#    layers: '8'#}
-        {# }).setOpacity(0.5);#}
-        {##}
-        {#var line_ss_layer = L.tileLayer.wms('https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?',{#}
-        {#    layers: '2'#}
-        {# }).setOpacity(0.5);#}
-
     </script>
 {% endblock extra_js_bottom %}
