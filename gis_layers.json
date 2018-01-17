@@ -5,28 +5,28 @@
       "name": "Flowline - Large Scale",
       "group": "Base Mapping",
       "layer_link": "https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?",
-      "layer": "2"
+      "layer": "3"
     },
     {
       "id": "flowdirection",
       "name": "Flow Direction",
       "group": "Base Mapping",
       "layer_link": "https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?",
-      "layer": "8"
+      "layer": "9"
     },
     {
       "id": "waterbody",
       "name": "Waterbody - Small Scale",
       "group": "Base Mapping",
       "layer_link": "https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?",
-      "layer": "7"
+      "layer": "8"
     },
     {
       "id": "line",
       "name": "Line - Small Scale",
       "group": "Base Mapping",
       "layer_link": "https://services.nationalmap.gov/arcgis/services/nhd/MapServer/WMSServer?",
-      "layer": "1"
+      "layer": "2"
     }
   ]
 }
