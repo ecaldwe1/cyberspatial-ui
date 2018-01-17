@@ -42,7 +42,7 @@ elasticsearch==6.0.0
 enum34==1.1.6
 flake8==3.5.0
 geolinks==0.2.0
--e git+https://github.com/GeoNode/geonode.git@e03c05a7fd02dcb451fcfd8a24cf46ce167d7d3a#egg=GeoNode
+geonode==2.6.3
 geonode-agon-ratings==0.3.5
 geonode-announcements==1.0.9
 geonode-arcrest==10.2
