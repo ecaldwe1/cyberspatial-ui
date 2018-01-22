@@ -1,6 +1,6 @@
 sudo: required
-language: c
+
 services:
   - docker
 script:
-  - docker build -t '234514569215.dkr.ecr.us-east-1.amazonaws.com/njcoast:$TRAVIS_COMMIT' .
+  - docker build -t 234514569215.dkr.ecr.us-east-1.amazonaws.com/njcoast:$TRAVIS_COMMIT .
