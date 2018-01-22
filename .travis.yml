@@ -3,7 +3,7 @@ services:
 - docker
 before_install:
 - pip install awscli --upgrade --user
-- eval $(aws ecr get-login --no-include-email)
+- eval $(aws ecr get-login --region us-east-1 --no-include-email)
 script:
 - docker build -t 234514569215.dkr.ecr.us-east-1.amazonaws.com/njcoast:$TRAVIS_COMMIT
 env:
