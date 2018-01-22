@@ -338,7 +338,7 @@ p.map-layer-group-heading {
   margin: 15px 0 0;
 }
 p.map-layer-group-heading span {
-  float: right;
+  /*float: right;*/
 }
 
 .well.rss-auto {
