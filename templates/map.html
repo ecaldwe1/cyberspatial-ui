@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block extra-headers %}
 
@@ -47,6 +48,7 @@
 
 
 {% block extra_js_bottom %}
+<script src="{% static 'js/utilities.js' %}"></script>
     <script>
         /*
         Base Map -- Centered on Keansburg, NJ
@@ -85,7 +87,7 @@
                 data: {},
                 dataType: "json",
                 success: function (result) {
-                    console.log("SUCCESS!");
+                    console.log("GIS LAYERS -- SUCCESS!");
                     console.log(result.layers);
                     process_layers(result.layers);
                 },
@@ -172,24 +174,6 @@
                         }
                     }
                 }
-            });
-        }
-
-        // Add unique() to array
-        Array.prototype.unique = function () {
-            var arr = [];
-            for (var i = 0; i < this.length; i++) {
-                if (!arr.includes(this[i])) {
-                    arr.push(this[i]);
-                }
-            }
-            return arr;
-        };
-
-        // Turn a string into camel-case. Note: If first letter of string is capitalized, will remain capitalized.
-        camelize = function camelize(str) {
-            return str.replace(/\W+(.)/g, function (match, chr) {
-                return chr.toUpperCase();
             });
         }
     </script>
