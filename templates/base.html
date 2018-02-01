@@ -9,6 +9,7 @@
 
     <title>Map - Planners</title>
 
+    <script src="{% static 'js/jquery.min.js' %}"></script>
 
     <link href="{% static 'css/assets.min.css' %}" rel="stylesheet"/>
 
@@ -39,7 +40,21 @@
     <link rel="search" type="application/opensearchdescription+xml" href="/catalogue/opensearch"
           title="GeoNode Search"/>
 
-    {% block extra-headers %} {% endblock extra-headers %}
+        <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+          integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+            integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+            crossorigin=""></script>
+
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.1.1/dist/esri-leaflet.js"
+            integrity="sha512-ECQqaYZke9cSdqlFG08zSkudgrdF6I1d8ViSa7I3VIszJyVqw4ng1G8sehEXlumdMnFYfzY0tMgdQa4WCs9IUw=="
+            crossorigin=""></script>
+
+
 </head>
 
 <body class="home" id="page-top">
@@ -138,8 +153,7 @@
         <div class="row">
 
             <div class="col-sm-8 col-lg-9 col-xl-10 leaflet-map">
-                {% block map %} {%  endblock map %}
-
+                <div id="mapid" class="col-sm-8 col-lg-9 col-xl-10" style="width: 100%; height: 100%;"></div>
             </div>
             <div class="col-sm-4 col-lg-3 col-xl-2" id="map-control-panel">
                 <div class="map-control-item">
@@ -147,226 +161,11 @@
 
                     {% endblock gis-map-controls-block %}
                 </div>
+
                 <div class="map-control-item">
-                    <a data-toggle="collapse" href="#hazardLayers" aria-expanded="false" aria-controls="hazardLayers">
-                        <h4 class="map-control-item-heading">Hazard Layers<i class="fa fa-chevron-down pull-right"
-                                                                             aria-hidden="true"></i></h4>
-                        <p class="qualifier" style="margin-bottom: 0">created by Storm Hazard Projection Tool</p>
-                    </a>
-                    <div class="collapse" id="hazardLayers">
-
-                        <div class="well rss-auto">
-                            <p class="rss-auto-title">Active Storms <span>auto-updated</span></p>
-                            <p class="map-layer-group-heading">
-                                <a data-toggle="collapse" href="#hurricaneJose" aria-expanded="false"
-                                   aria-controls="hurricaneJose">
-                                    <i class="fa fa-chevron-right" aria-hidden="true"></i> Hurricane Jose <span
-                                        title="Unfollow"><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
-                                </a>
-                            </p>
-                            <p class="follow-unfollow">following</p>
-                            <ul class="collapse map-layers" id="hurricaneJose">
-                                <li><input type="checkbox" name="gender" value="male"> Wind Speed/Direction</li>
-                                <li><input type="checkbox" name="gender" value="female"> Wind Speed/Direction Field</li>
-                                <li><input type="checkbox" name="gender" value="male"> Wave Surge Simulation</li>
-                                <li><input type="checkbox" name="gender" value="female"> Tide Chart</li>
-                                <li><input type="checkbox" name="gender" value="female"> Transect Locations</li>
-                                <li><input type="checkbox" name="gender" value="female"> Sandy Surge Extents</li>
-                                <li><input type="checkbox" name="gender" value="female"> Sandy Hindcast Simulation</li>
-                                <li><input type="checkbox" name="gender" value="male"> Cat 1 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 2 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 3 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 4 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 5 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                    <span>1 ft</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                    <span>2 ft</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                    <span>3 ft</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>1 ft Sea Level Rise</span>
-                                </li>
-                                <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>2 ft Sea Level Rise</span>
-                                </li>
-                                <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>3 ft Sea Level Rise</span>
-                                </li>
-                                <li><input type="checkbox" name="gender" value="female"> NFIP Claims Areas Map</li>
-                            </ul>
-                            <p class="map-layer-group-heading">
-                                <a data-toggle="collapse" href="#hurricaneKaitlin" aria-expanded="false"
-                                   aria-controls="hurricaneKaitlin">
-                                    <i class="fa fa-chevron-right" aria-hidden="true"></i> Hurricane Kaitlin<span
-                                        title="Unfollow"><i class="fa fa-minus-circle" aria-hidden="true"></i></span>
-                                </a>
-                            </p>
-                            <p class="follow-unfollow">following</p>
-                            <ul class="collapse map-layers" id="hurricaneKaitlin">
-                                <li><input type="checkbox" name="gender" value="male"> Wind Speed/Direction</li>
-                                <li><input type="checkbox" name="gender" value="female"> Wind Speed/Direction Field</li>
-                                <li><input type="checkbox" name="gender" value="male"> Wave Surge Simulation</li>
-                                <li><input type="checkbox" name="gender" value="female"> Tide Chart</li>
-                                <li><input type="checkbox" name="gender" value="female"> Transect Locations</li>
-                                <li><input type="checkbox" name="gender" value="female"> Sandy Surge Extents</li>
-                                <li><input type="checkbox" name="gender" value="female"> Sandy Hindcast Simulation</li>
-                                <li><input type="checkbox" name="gender" value="male"> Cat 1 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 2 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 3 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 4 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Cat 5 Surge
-                                    <span>aggregate sim</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                    <span>1 ft</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                    <span>2 ft</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                    <span>3 ft</span></li>
-                                <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>1 ft Sea Level Rise</span>
-                                </li>
-                                <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>2 ft Sea Level Rise</span>
-                                </li>
-                                <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>3 ft Sea Level Rise</span>
-                                </li>
-                                <li><input type="checkbox" name="gender" value="female"> NFIP Claims Areas Map</li>
-                            </ul>
-                            <p class="map-layer-group-heading not-following">
-                                <i class="fa fa-chevron-right invisible" aria-hidden="true"></i> Hurricane Liam <span
-                                    title="Follow"><a href=""><i class="fa fa-plus-circle"
-                                                                 aria-hidden="true"></i></a></span>
-                                </a>
-                            </p>
-                            <p class="follow-unfollow">not following</p>
-                        </div>
-                        <p class="rss-auto-title" style="margin-top: 15px">Historical Storm Tracks <span>archived</span>
-                        </p>
-                        <p class="map-layer-group-heading">
-                            <a data-toggle="collapse" href="#hurricaneJoseArch" aria-expanded="false"
-                               aria-controls="hurricaneJoseArch">
-                                <i class="fa fa-chevron-right" aria-hidden="true"></i> Hurricane Sandy<span><i
-                                    class="fa fa-close" aria-hidden="true"></i></span>
-                            </a>
-                        </p>
-                        <p class="follow-unfollow">Oct 22, 2012 10:24a.m.</p>
-                        <ul class="collapse map-layers" id="hurricaneJoseArch">
-                            <li><input type="checkbox" name="gender" value="male"> Wind Speed/Direction</li>
-                            <li><input type="checkbox" name="gender" value="female"> Wind Speed/Direction Field</li>
-                            <li><input type="checkbox" name="gender" value="male"> Wave Surge Simulation</li>
-                            <li><input type="checkbox" name="gender" value="female"> Tide Chart</li>
-                            <li><input type="checkbox" name="gender" value="female"> Transect Locations</li>
-                            <li><input type="checkbox" name="gender" value="female"> Sandy Surge Extents</li>
-                            <li><input type="checkbox" name="gender" value="female"> Sandy Hindcast Simulation</li>
-                            <li><input type="checkbox" name="gender" value="male"> Cat 1 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 2 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 3 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 4 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 5 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>1 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>2 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>3 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>1 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>2 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>3 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> NFIP Claims Areas Map</li>
-                        </ul>
-                        <button class="btn btn-secondary btn-md btn-block"
-                                style="margin-top: 20px;border: 1px solid #ddd">Browse Archive
-                        </button>
-
-                        <hr style="margin: 20px 0">
-                        <p class="rss-auto-title">What-if Scenarios <span>manual</span></p>
-                        <p class="map-layer-group-heading">
-                            <a data-toggle="collapse" href="#hurricane-5" aria-expanded="false"
-                               aria-controls="hurricane-5">
-                                <i class="fa fa-chevron-right" aria-hidden="true"></i> Hurricane Run #5<span><i
-                                    class="fa fa-close" aria-hidden="true"></i></span>
-                            </a>
-                        </p>
-                        <ul class="collapse map-layers" id="hurricane-5">
-                            <li><input type="checkbox" name="gender" value="male"> Wind Speed/Direction</li>
-                            <li><input type="checkbox" name="gender" value="female"> Wind Speed/Direction Field</li>
-                            <li><input type="checkbox" name="gender" value="male"> Wave Surge Simulation</li>
-                            <li><input type="checkbox" name="gender" value="female"> Tide Chart</li>
-                            <li><input type="checkbox" name="gender" value="female"> Transect Locations</li>
-                            <li><input type="checkbox" name="gender" value="female"> Sandy Surge Extents</li>
-                            <li><input type="checkbox" name="gender" value="female"> Sandy Hindcast Simulation</li>
-                            <li><input type="checkbox" name="gender" value="male"> Cat 1 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 2 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 3 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 4 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Cat 5 Surge
-                                <span>aggregate sim</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>1 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>2 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>3 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>1 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>2 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>3 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> NFIP Claims Areas Map</li>
-                        </ul>
-                        <p class="map-layer-group-heading">
-                            <a data-toggle="collapse" href="#noreaster-2" aria-expanded="false"
-                               aria-controls="noreaster-2">
-                                <i class="fa fa-chevron-right" aria-hidden="true"></i> Nor'easter Run #2<span><i
-                                    class="fa fa-close" aria-hidden="true"></i></span>
-                            </a>
-                        </p>
-                        <ul class="collapse map-layers" id="noreaster-2">
-                            <li><input type="checkbox" name="gender" value="male"> Wind Speed/Direction</li>
-                            <li><input type="checkbox" name="gender" value="female"> Wind Speed/Direction Field</li>
-                            <li><input type="checkbox" name="gender" value="female"> Tide Chart</li>
-                            <li><input type="checkbox" name="gender" value="female"> Transect Locations</li>
-                            <li><input type="checkbox" name="gender" value="female"> Sandy Surge Extents</li>
-                            <li><input type="checkbox" name="gender" value="female"> Sandy Hindcast Simulation</li>
-                            <li><input type="checkbox" name="gender" value="female"> Nor'easter Aggregate Simulation
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>1 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>2 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Sea Level Rise Map
-                                <span>3 ft</span></li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>1 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>2 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> Marsh Retreat <span>3 ft Sea Level Rise</span>
-                            </li>
-                            <li><input type="checkbox" name="gender" value="female"> NFIP Claims Areas Map</li>
-                        </ul>
-                        <button class="btn btn-secondary btn-md btn-block" style="margin-top: 20px">Import Simulation
-                        </button>
-                        <a class="btn btn-primary btn-md btn-block" href="shp-tool.html">Run New Simulation</a>
-                    </div>
+                    {% include 'storm_visualization_menu.html' %}
                 </div>
+
                 <div class="map-control-item">
                     <a data-toggle="collapse" href="#annotations" aria-expanded="false" aria-controls="annotations">
                         <h4 class="map-control-item-heading">Annotations<i class="fa fa-chevron-down pull-right"
@@ -388,6 +187,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="map-control-item">
                     <p class="qualifier" style="margin-top: 10px">Save current map configuration (e.g. active layers and
                         annotations), copy the map and save with a new name, or download the map.</p>
@@ -447,7 +247,7 @@
 <!-- End of Modal -->
 
 
-<script src="{% static 'js/jquery.min.js' %}"></script>
+{#<script src="{% static 'js/jquery.min.js' %}"></script>#}
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/assets.min.js' %}"></script>
 
