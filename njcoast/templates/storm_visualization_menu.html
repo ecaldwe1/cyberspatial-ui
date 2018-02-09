@@ -97,8 +97,6 @@ for layer group or layer to be added to the menu.
             $(active_storm_template).removeClass('hidden');
             $("#activeStormGroup").append(active_storm_template);
         });
-
-
     }
 
     function unfollowClick(parent) {
@@ -122,7 +120,8 @@ for layer group or layer to be added to the menu.
                                                                  .text();
 
         unfollow_storm_template.append(storm_name_text)
-    .append("<span title=\"Follow\"><a href=\"\"><i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i></a></span>")
+    .append("<span title=\"Follow\"><i id=\"" + storm_name + "\" class=\"fa fa-plus-circle\" aria-hidden=\"true\" " +
+        "onclick=\"followClick($(this))\"></i></span>")
     .append("<p class=\"follow-unfollow\">not following</p>");
 
         $(unfollow_storm_template).removeClass('hidden');
@@ -130,4 +129,10 @@ for layer group or layer to be added to the menu.
         console.log("Successfully unfollowed ", storm_name_text);
     }
 
+
+    function followClick(storm) {
+        var storm_class_name = storm.attr('id');
+        $('#activeStorm.' + storm_class_name).removeClass('hidden');
+        $('#unfollowActiveStorm.' + storm_class_name).addClass('hidden');
+    }
 </script>
