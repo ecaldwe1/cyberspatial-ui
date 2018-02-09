@@ -19,6 +19,16 @@
                 </div>
                 <p class="follow-unfollow" id="last_updated">today 8:56 a.m.</p>
             </div>
+            <div id="unfollowActiveStorm" class="hidden map-layer-group-heading auto not-following">
+                <i class="fa fa-chevron-right invisible" aria-hidden="true"></i>
+                <div id='unfollow-badge' class=""></div>
+
+                <span title="Follow">
+                    <a href=""><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+                </span>
+              </div>
+              <p class="follow-unfollow">not following</p>
+            </div>
         </div>
     </div>
     <a class="btn btn-primary btn-md btn-block" href="shp-tool.html" style="margin-top: 30px">Run New Simulation</a>
@@ -68,6 +78,7 @@ for layer group or layer to be added to the menu.
             var camelcaseName = camelize(item.name.toLowerCase());
 
             var active_storm_template = $('#activeStorm').clone(true);
+            $(active_storm_template).addClass(camelcaseName);
             $(active_storm_template).find('a').attr('href', '#' + camelcaseName).attr('aria-controls', camelcaseName);
 
             // Set the correct badge icon for the storm type
@@ -80,9 +91,10 @@ for layer group or layer to be added to the menu.
 
             $(active_storm_template).find('a#storm_link')
                 .append("<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i>")
-                .append("<div id=\"storm_type\" class=\"" + badge_type +"\">"+ item.type + "</div>")
+                .append("<div id=\"storm_type\" class=\"storm_badge " + badge_type +"\">"+ item.type + "</div>")
                 .append(item.name)
-                .append("<span title=\"Unfollow\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i></span>");
+                .append("<span title=\"Unfollow\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\" id=\""+
+                    camelcaseName + "_unfollow\" onclick=\"unfollowClick($(this).parent().parent().parent().parent())\"></i></span>");
 
             // Unhide the block and append to the list
             $(active_storm_template).removeClass('hidden');
@@ -90,6 +102,29 @@ for layer group or layer to be added to the menu.
         });
 
 
+    }
+
+    function unfollowClick(parent) {
+        console.log(parent.attr('class'));
+        var storm_name = parent.attr('class');
+        var classname = '.' + storm_name;
+
+        // Hide the following active storm
+        $(classname).addClass('hidden');
+        //$(classname).clone(true).addClass('map-layer-group-heading auto not-following ' + storm_name);
+
+        // Add the unfollowed active storm
+        var unfollow_storm_template = $('#unfollowActiveStorm').clone(true);
+        $(unfollow_storm_template).addClass(storm_name);
+        console.log(parent);
+        console.log(parent.find('div.storm_badge'));
+        var badge_class = parent.find('div.storm_badge').attr("class");
+        alert(badge_class);
+        var badge_innerText = parent.find('div.storm_badge').text();
+        $(unfollow_storm_template).find('div#unfollow-badge').addClass(badge_class).text(badge_innerText);
+
+        $(unfollow_storm_template).removeClass('hidden');
+        $("#activeStormGroup").append(unfollow_storm_template);
     }
 
 </script>
