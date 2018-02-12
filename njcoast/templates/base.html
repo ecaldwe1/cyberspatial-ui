@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load base_tags %}
+{% load avatar_tags %}
 
 
 <!DOCTYPE html>
@@ -126,7 +127,8 @@
             {% endblock %}
           </ul>
 	      <ul class="nav navbar-nav navbar-right">
-            <li>
+            <!-- omitting search for now -->
+            <!-- <li>
               <div class="search">
                 <form id="search" action="{% url "search" %}" >
                   <span class="fa fa-search"></span>
@@ -137,14 +139,14 @@
                   {% endif %}
                 </form>
               </div>
-	        </li>
+	        </li> -->
             {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP %}
             <li><a href="{% url "account_signup" %}">{% trans "Register" %}</a></li>
             {% endif %}
             {% if user.is_authenticated %}
             <li>
               <a href="#" class="dropdown-toggle avatar" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-{#                {% avatar user 42 %}#}
+                {% avatar user 42 %}
                 {% with full_name=user.first_name|add:' '|add:user.last_name %}
                   {% if full_name.strip %}
                     {{ full_name | truncatechars:20 }}
@@ -275,40 +277,37 @@
 
 
 <!-- Modal must stay outside the navbar -->
-
+{% if not user.is_authenticated %}
 <div class="modal fade" id="SigninModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                        class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Sign in</h4>
-            </div>
-            <form class="form-signin" role="form" action="/account/login/?next=/" method="post">
-                <div class="modal-body">
-                    <input type='hidden' name='csrfmiddlewaretoken' value='KYnTyykJtly0xoMBQb3mzsmockWyZqDN'/>
-                    <div class="form-group">
-                        <label for="id_username" class="sr-only">Username:</label>
-                        <input id="id_username" class="form-control" name="username" placeholder="Username"
-                               type="text"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_password" class="sr-only">Password:</label>
-                        <input id="id_password" class="form-control" name="password" placeholder="Password"
-                               type="password"/>
-                    </div>
-                    <label class="checkbox">
-                        <input type="checkbox"/> Remember Me
-                    </label>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-block">Sign in</button>
-                </div>
-            </form>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">{% trans "Sign in" %}</h4>
+      </div>
+      <form class="form-signin" role="form" action="{% url "account_login" %}?next={{ request.path }}" method="post">
+        <div class="modal-body">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="id_username" class="sr-only">{% trans "Username" %}:</label>
+            <input id="id_username" class="form-control" name="username" placeholder="{% trans "Username" %}" type="text" />
+          </div>
+          <div class="form-group">
+            <label for="id_password" class="sr-only">{% trans "Password" %}:</label>
+            <input id="id_password" class="form-control" name="password" placeholder="{% trans "Password" %}" type="password" />
+          </div>
+          <label class="checkbox">
+            <input type="checkbox" /> {% trans "Remember Me" %}
+          </label>
         </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-block">{% trans "Sign in" %}</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
-
+{% endif %}
 <!-- End of Modal -->
 
 
@@ -436,4 +435,3 @@
 {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 </body>
 </html>
-
