@@ -15,10 +15,9 @@
         <div id="activeStormGroup">
             <div id="activeStorm" class="hidden">
                 <div id="storm_heading" class="map-layer-group-heading auto">
-                    <a id="storm_link" data-toggle="collapse" href="" aria-expanded="false"
-                       aria-controls=""></a>
+                    <a id="storm_link" data-toggle="collapse" href="#hurricaneJose" aria-expanded="false" aria-controls="hurricaneJose"></a>
                 </div>
-                <p class="follow-unfollow" id="last_updated">today 8:56 a.m.</p>
+                <p class="follow-unfollow" id="last_updated"></p>
             </div>
             <div id="unfollowActiveStorm" class="hidden map-layer-group-heading auto not-following">
                 <i class="fa fa-chevron-right invisible" aria-hidden="true"></i>
@@ -34,13 +33,16 @@
 
 
 <script src="{% static 'js/utilities.js' %}"></script>
+<script src="{% static 'js/leaflet-heat.js' %}"></script>
+<script src="{% static 'NJ-coast-heatmap/nj-coast.js' %}"></script>
 <script>
+
+    var storm_layer_list = {};
 
     $(document).ready(function () {
 
         console.log('IN THE STORM VISUALIZATION!');
         get_rss_feed();
-
     });
 
     /*
@@ -77,22 +79,66 @@ for layer group or layer to be added to the menu.
             var active_storm_template = $('#activeStorm').clone(true);
             $(active_storm_template).addClass(camelcaseName);
             $(active_storm_template).find('a').attr('href', '#' + camelcaseName).attr('aria-controls', camelcaseName);
+            var last_update_date = new Date(item.last_updated);
+            $(active_storm_template).find('p#last_updated').text(last_update_date);
 
             // Set the correct badge icon for the storm type
             var badge_type = "";
-            if(item.type == "H") {
+            if (item.type == "H") {
                 badge_type = "h-badge";
-             } else if (item.type == "N") {
-               badge_type = "n-badge";
-             }
+            } else if (item.type == "N") {
+                badge_type = "n-badge";
+            }
 
             $(active_storm_template).find('a#storm_link')
                 .append("<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i>")
-                .append("<div id=\"storm_type\" class=\"storm_badge " + badge_type +"\">"+ item.type + "</div>")
+                .append("<div id=\"storm_type\" class=\"storm_badge " + badge_type + "\">" + item.type + "</div>")
                 .append(item.name)
-                .append("<span title=\"Unfollow\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\" id=\""+
+                .append("<span title=\"Unfollow\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\" id=\"" +
                     camelcaseName + "_unfollow\" onclick=\"unfollowClick($(this).parent().parent().parent().parent())\"></i></span>");
 
+            $(active_storm_template).append("<div class=\"collapse\" id=\"" + camelcaseName + "\">\n" +
+                "<ul class=\"map-layers\">\n" +
+                "<li><input type=\"checkbox\" id=\""+ camelcaseName + "_wind_field_box\" onchange=\"storm_vis_check($(this))\"> Wind Field</li>\n" +
+                "<li><input type=\"checkbox\" id=\"" + camelcaseName + "_surge_box\" onchange=\"storm_vis_check($(this))\"> Surge</li>\n" +
+                "<li><input type=\"checkbox\" id=\"" + camelcaseName + "_total_run_up_box\" onchange=\"storm_vis_check($(this))\"> Total Run Up</li></ul>" +
+                "<div class=\"well plain orange\">\n" +
+                "                  <h5>Explore Scenarios</h5>\n" +
+                "                  <ul class=\"map-layers\">\n" +
+                "                    <li class=\"explore-scenario-controls\">\n" +
+                "                      <p>Sea Level Rise</p>\n" +
+                "                      <div class=\"shp-controls\">\n" +
+                "                        <input class=\"range-input " + camelcaseName + "_slr_range\" data-target=\"slr\" min=\"0\" max=\"1.5\" step=\"0.1\" value=\"0\" type=\"range\">\n" +
+                "                        <input id=\"input_slr_" + camelcaseName + "\" class=\"num-input job-input " + camelcaseName + "_slr_input\" name=\"slr\" value=\"0\" type=\"text\"> \n" +
+                "                      </div>\n" +
+                "                    </li>\n" +
+                "                    <li class=\"explore-scenario-controls\">\n" +
+                "                      <p>Coastal Protection (e.g. dunes)</p>\n" +
+                "                      <ul class=\"one-line " + camelcaseName + "\"_dunes_radios\">\n" +
+                "                        <li><input type=\"radio\" name=\"dunes\" value=\"current\" checked> Current</li>\n" +
+                "                        <li><input type=\"radio\" name=\"dunes\" value=\"degraded\"> Degraded</li>\n" +
+                "                        <li><input type=\"radio\" name=\"dunes\" value=\"compromised\"> Compromised</li>\n" +
+                "                      </ul>\n" +
+                "                    </li>\n" +
+                "                    <li class=\"explore-scenario-controls\">\n" +
+                "                      <p>Tides</p>\n" +
+                "                      <ul class=\"one-line " + camelcaseName + "_tide_radios\">\n" +
+                "                        <li><input type=\"radio\" name=\"tide\" value=\"low\"> Low</li>\n" +
+                "                        <li><input type=\"radio\" name=\"tide\" value=\"zero\" checked> Zero</li>\n" +
+                "                        <li><input type=\"radio\" name=\"tide\" value=\"high\"> High</li>\n" +
+                "                      </ul>\n" +
+                "                    </li>\n" +
+                "                    <li class=\"explore-scenario-controls\">\n" +
+                "                      <p>Analysis Type</p>\n" +
+                "                      <ul class=\"" + camelcaseName + "_analysis_radios\">\n" +
+                "                        <li><input type=\"radio\" name=\"analysis\" value=\"det\" checked> Deterministic</li>\n" +
+                "                        <li><input type=\"radio\" name=\"analysis\" value=\"prob-exp\"> Probabilistic <span>expected</span></li>\n" +
+                "                        <li><input type=\"radio\" name=\"analysis\" value=\"prob-ext\"> Probabilistic <span>extreme</span></li>\n" +
+                "                      </ul>\n" +
+                "                    </li>\n" +
+                "                  </ul>\n" +
+                "                  <a class=\"btn btn-primary btn-md btn-block " + camelcaseName + "_update_button\" onclick=\"updateMapClick(\"" + camelcaseName +"\")\" style=\"margin-top: 30px\">Update Map</a>\n" +
+                "                </div></div>");
             // Unhide the block and append to the list
             $(active_storm_template).removeClass('hidden');
             $("#activeStormGroup").append(active_storm_template);
@@ -115,24 +161,63 @@ for layer group or layer to be added to the menu.
         $(unfollow_storm_template).find('div#unfollow-badge').addClass(badge_class).text(badge_innerText);
 
         var storm_name_text = parent.find('a#storm_link').clone().children() //select all the children
-                                                                 .remove()   //remove all the children
-                                                                 .end()  //again go back to selected element
-                                                                 .text();
+            .remove()   //remove all the children
+            .end()  //again go back to selected element
+            .text();
 
         unfollow_storm_template.append(storm_name_text)
-    .append("<span title=\"Follow\"><i id=\"" + storm_name + "\" class=\"fa fa-plus-circle\" aria-hidden=\"true\" " +
-        "onclick=\"followClick($(this))\"></i></span>")
-    .append("<p class=\"follow-unfollow\">not following</p>");
+            .append("<span title=\"Follow\"><i id=\"" + storm_name + "\" class=\"fa fa-plus-circle\" aria-hidden=\"true\" " +
+                "onclick=\"followClick($(this))\"></i></span>")
+            .append("<p class=\"follow-unfollow\">not following</p>");
 
         $(unfollow_storm_template).removeClass('hidden');
         $("#activeStormGroup").append(unfollow_storm_template);
         console.log("Successfully unfollowed ", storm_name_text);
     }
 
-
     function followClick(storm) {
         var storm_class_name = storm.attr('id');
         $('#activeStorm.' + storm_class_name).removeClass('hidden');
         $('#unfollowActiveStorm.' + storm_class_name).addClass('hidden');
     }
+
+    function storm_vis_check(layer_checkbox) {
+        if((layer_checkbox).is(":checked")) {
+            console.log(layer_checkbox.attr('id') + " is checked!!!");
+
+        //load heatmap data
+        var addressPoints = (function () {
+            var json = null;
+            jQuery.ajax({
+                'async': false,
+                'global': false,
+                'url': "{% static 'NJ-coast-heatmap/heatmap.json' %}",
+                'dataType': "json",
+                'success': function (data) {
+                    json = data;
+                }
+            });
+            return json;
+        })();
+
+        var heat = L.heatLayer(addressPoints.runup, {max: 4, radius: 25, gradient: {0.4: 'blue', 0.65: 'lime', 1: 'red'}, blur: 10}).addTo(mymap);
+
+        storm_layer_list[layer_checkbox.attr('id')] = heat;
+
+        } else {
+            console.log(layer_checkbox.attr('id') + " is unchecked!!!");
+            // Remove the layer toggled from this checkbox
+            mymap.removeLayer(storm_layer_list[layer_checkbox.attr('id')]);
+        }
+
+    }
+
+    function updateMapClick(storm_name) {
+        console.log("UPDATING " + storm_name);
+
+    }
+
+
+
+
 </script>
