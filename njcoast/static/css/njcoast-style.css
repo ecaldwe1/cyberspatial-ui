@@ -557,17 +557,17 @@ ul.map-layers li.sub-section p {
   font-style: italic;
   font-size: 14px;
 }
-ul.map-layers li.surge-controls {
+ul.map-layers li.explore-scenario-controls {
   font-size: 12px;
 }
-ul.map-layers li.surge-controls ul {
+ul.map-layers li.explore-scenario-controls ul {
 }
-ul.map-layers li.surge-controls p {
+ul.map-layers li.explore-scenario-controls p {
   font-style: italic;
   color: #666;
   margin: 15px 0 0;
 }
-ul.map-layers li.surge-controls ul li {
+ul.map-layers li.explore-scenario-controls ul li {
   font-size: 13px;
   margin: 5px 0 0;
 }
