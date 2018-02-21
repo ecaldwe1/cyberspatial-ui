@@ -42,16 +42,15 @@
     var update_map_layers = {}; // Dictionary of layers added through the explore scenarios box
 
     $(document).ready(function () {
-
-        console.log('Requesting RSS Feed......');
         get_rss_feed();
     });
 
     /*
-Ajax call to the server. Returns JSON with layers in it.
-TODO: Will need to update url
-*/
+    Ajax call to the server. Returns JSON with layers in it.
+    TODO: Will need to update url
+    */
     function get_rss_feed() {
+        console.log('Requesting RSS Feed......');
         $.ajax({
             type: "GET",
             url: "/static/rss_feed.json",
@@ -69,9 +68,9 @@ TODO: Will need to update url
     }
 
     /*
-Function to pull the layer groups out and call the appropriate function
-for layer group or layer to be added to the menu.
- */
+    Function to pull the layer groups out and call the appropriate function
+    for layer group or layer to be added to the menu.
+     */
     function add_active_storm_to_menu(active_storms) {
         console.log("Adding storms to menu...");
         active_storms.forEach(function (item) {
@@ -163,6 +162,9 @@ for layer group or layer to be added to the menu.
         });
     }
 
+    /*
+    Function called when minus button is clicked on an active followed storm
+     */
     function unfollowClick(parent) {
         var storm_name = parent.attr('class');
         var classname = '.' + storm_name;
@@ -193,15 +195,21 @@ for layer group or layer to be added to the menu.
         console.log("Successfully unfollowed ", storm_name_text);
     }
 
+    /*
+    Function called when plus button is clicked on an active unfollowed storm
+     */
     function followClick(storm) {
         var storm_class_name = storm.attr('id');
         $('#activeStorm.' + storm_class_name).removeClass('hidden');
         $('#unfollowActiveStorm.' + storm_class_name).addClass('hidden');
+        console.log("Successfully followed ", storm_class_name);
     }
 
+    /*
+    Function called when Wind Field, Surge, or Total Runup checkbox is checked for an active followed storm
+     */
     function storm_vis_check(layer_checkbox, storm_name) {
         if ((layer_checkbox).is(":checked")) {
-            console.log(layer_checkbox.attr('id') + " is checked!!!");
 
             //load heatmap data
             var addressPoints = (function () {
@@ -229,7 +237,6 @@ for layer group or layer to be added to the menu.
 
 
         } else {
-            console.log(layer_checkbox.attr('id') + " is unchecked!!!");
             // Remove the layer toggled from this checkbox
             mymap.removeLayer(storm_layer_dict[layer_checkbox.attr('id')]);
 
@@ -238,6 +245,10 @@ for layer group or layer to be added to the menu.
         check_scenario_map_layers(storm_name);
     }
 
+    /*
+    Function called after Wind Field, Surge, or Total Runup checkbox is checked for an active followed storm to
+    determine which Explore Scenario controls should be enabled.
+     */
     function check_scenario_map_layers(storm_name) {
         var layers_checked = [];
         console.log("CHECKING SCENARIO LAYERS...");
@@ -306,6 +317,9 @@ for layer group or layer to be added to the menu.
         }
     }
 
+    /*
+    Function called when the Update Map button is clicked in an the Explore Scenarios box of an active followed storm
+     */
     function updateMapClick(storm_name) {
         console.log("UPDATING " + storm_name);
 
